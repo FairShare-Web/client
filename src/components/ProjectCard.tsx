@@ -25,47 +25,48 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
         <div className="p-5 flex flex-col flex-1 relative">
            {project.impressionCount < 10 && (
-             <span className="absolute -top-3 left-5 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm z-10 border-2 border-white">
-               NEW ARRIVAL
+             <span className="absolute -top-3 right-5 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-blue-200 z-10 border-2 border-white flex items-center gap-1.5 ring-1 ring-blue-50">
+               <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+               </span>
+               신규 지원 프로젝트 (Spotlight)
              </span>
            )}
-           {project.impressionCount >= 10 && project.impressionCount < 50 && (
-              <span className="absolute -top-3 left-5 bg-purple-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm z-10 border-2 border-white flex items-center gap-1">
-                <span className="animate-pulse">✨</span> SPOTLIGHT
+
+           <div className="flex flex-wrap gap-2 mb-3">
+              <span className="px-2.5 py-1 bg-gray-50 rounded-md text-[10px] font-bold text-gray-500 uppercase tracking-wide border border-gray-100">
+                {project.category}
               </span>
-           )}
+           </div>
 
            <h3 className="font-bold text-lg text-gray-900 group-hover:text-blue-600 transition-colors mb-2 line-clamp-2 leading-snug">
              {project.title}
            </h3>
            
-           <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-0.5 bg-gray-100 rounded text-[10px] font-bold text-gray-500 uppercase tracking-wide">
-                {project.category}
-              </span>
-           </div>
-           
-           <div className="mt-auto flex items-end justify-between border-t border-gray-50 pt-4">
-             <div className="flex flex-col">
-               <span className="text-xs text-gray-400 font-medium mb-1">Created by</span>
-               <span className="text-sm text-gray-700 font-semibold truncate max-w-[120px]">
-                 {project.user.name || 'Anonymous'}
-               </span>
-             </div>
-             
-             <div className="flex flex-col items-end">
-                <span className="text-xs text-gray-400 font-medium mb-1 flex items-center gap-1">
-                  Exposure
-                  <div className="group/tooltip relative">
-                    <svg className="w-3 h-3 text-gray-300 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span className="absolute bottom-full right-0 mb-2 w-32 bg-gray-800 text-white text-[10px] p-2 rounded shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-20 text-center font-normal">
-                      Times displayed to fair users
+           <div className="mt-auto pt-5 border-t border-gray-50/80">
+             <div className="flex items-center justify-between gap-4 mb-3">
+               <div className="flex flex-col">
+                 <span className="text-[10px] text-gray-400 font-semibold mb-0.5">Created by</span>
+                 <span className="text-xs text-gray-800 font-bold truncate max-w-[100px]">
+                   {project.user.name || 'Anonymous'}
+                 </span>
+               </div>
+               
+               <div className="flex gap-2">
+                 <div className="flex flex-col items-end">
+                    <span className="text-[10px] text-gray-400 font-medium mb-0.5">노출 횟수</span>
+                    <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-xs font-bold font-mono">
+                      {project.impressionCount.toLocaleString()}
                     </span>
-                  </div>
-                </span>
-                <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-xs font-bold">
-                  {project.impressionCount.toLocaleString()}
-                </span>
+                 </div>
+                 <div className="flex flex-col items-end">
+                    <span className="text-[10px] text-gray-400 font-medium mb-0.5">조회수</span>
+                    <span className="bg-gray-50 text-gray-600 px-2 py-0.5 rounded text-xs font-bold font-mono">
+                      {project.viewCount.toLocaleString()}
+                    </span>
+                 </div>
+               </div>
              </div>
            </div>
         </div>

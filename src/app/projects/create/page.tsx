@@ -44,17 +44,17 @@ export default function CreateProjectPage() {
            </div>
 
            <div className="space-y-2">
-             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Category</label>
+             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">카테고리</label>
              <select 
                name="category" 
                className="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-800 appearance-none cursor-pointer"
              >
-               <option value="Web">Web</option>
-               <option value="App">App</option>
-               <option value="Design">Design</option>
+               <option value="Web">웹</option>
+               <option value="App">앱</option>
                <option value="AI">AI</option>
-               <option value="Game">Game</option>
-               <option value="Other">Other</option>
+               <option value="Game">게임</option>
+               <option value="Design">디자인</option>
+               <option value="Other">기타</option>
              </select>
            </div>
 

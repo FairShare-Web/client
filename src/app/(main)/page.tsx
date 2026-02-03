@@ -14,7 +14,17 @@ export default async function MainPage(props: MainPageProps) {
   const category = searchParams.category || 'All'
   const projects = await getFairProjects(category)
 
-  const categories = ['All', 'Web', 'App', 'Design', 'AI', 'Game', 'Other']
+  const categoryMap: Record<string, string> = {
+    'All': '전체',
+    'Web': '웹',
+    'App': '앱',
+    'AI': 'AI',
+    'Game': '게임',
+    'Design': '디자인',
+    'Other': '기타'
+  }
+
+  const categoryLabel = categoryMap[category] || category
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -24,10 +34,10 @@ export default async function MainPage(props: MainPageProps) {
             <Link href="/" className="text-xl font-black text-blue-600 tracking-tighter hover:opacity-80 transition-opacity">FairShare</Link>
             <div className="flex items-center gap-4">
                <Link href="/dashboard" className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
-                 Creator Dashboard
+                 대시보드
                </Link>
                <Link href="/projects/create" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm cursor-pointer active:scale-95">
-                 Register Project
+                 프로젝트 등록
                </Link>
             </div>
          </div>
@@ -36,10 +46,10 @@ export default async function MainPage(props: MainPageProps) {
        <div className="flex-1 max-w-screen-xl mx-auto px-4 py-12 w-full">
           <header className="mb-12 text-center max-w-2xl mx-auto relative">
              <div className="absolute top-0 right-0 -mt-4 hidden lg:block">
-                 <div className="bg-yellow-50 text-yellow-800 text-xs font-bold px-3 py-2 rounded-lg border border-yellow-100 shadow-sm max-w-[200px] text-left">
-                    💡 Why the list changes?
-                    <p className="font-medium text-yellow-700 mt-1 leading-normal">
-                      We randomly select projects with <span className="underline decoration-dotted">low exposure</span> to ensure everyone gets a fair chance!
+                 <div className="bg-blue-50 text-blue-800 text-xs font-bold px-3 py-2 rounded-lg border border-blue-100 shadow-sm max-w-[200px] text-left">
+                    💡 공정한 노출이란?
+                    <p className="font-medium text-blue-700 mt-1 leading-normal">
+                      아직 빛을 보지 못한 <span className="underline decoration-dotted">숨은 보석</span>들에게 우선적으로 기회를 줍니다.
                     </p>
                  </div>
              </div>
@@ -48,23 +58,31 @@ export default async function MainPage(props: MainPageProps) {
                Fair Exposure for <br/>
                <span className="text-blue-600">Every Creator</span>
              </h1>
+
+             <div className="mb-8 inline-block bg-blue-50/50 border border-blue-100 rounded-full px-4 py-1.5">
+               <p className="text-sm font-medium text-blue-800">
+                 ✨ 페어쉐어 알고리즘에 의해 노출 기회가 적은 프로젝트를 우선적으로 조명합니다.
+               </p>
+             </div>
+
              <p className="text-lg text-gray-500 leading-relaxed mb-8">
-               We believe every project deserves a spotlight. Our algorithm prioritizes hidden gems to ensure fair visibility for all.
+               모든 프로젝트는 주목받을 자격이 있습니다. <br className="hidden md:inline"/>
+               우리는 숨겨진 명작을 찾아내어 공평한 기회를 제공합니다.
              </p>
 
              {/* Category Filter Chips */}
              <div className="flex flex-wrap items-center justify-center gap-2">
-                {categories.map(cat => (
+                {Object.entries(categoryMap).map(([key, label]) => (
                   <Link 
-                    key={cat} 
-                    href={cat === 'All' ? '/' : `/?category=${cat}`}
+                    key={key} 
+                    href={key === 'All' ? '/' : `/?category=${key}`}
                     className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${
-                      category === cat 
+                      category === key 
                         ? 'bg-gray-900 text-white border-gray-900' 
                         : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}
                   >
-                    {cat}
+                    {label}
                   </Link>
                 ))}
              </div>
