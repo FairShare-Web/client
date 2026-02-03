@@ -1,9 +1,11 @@
 import { getProject, getRelatedProjects } from '@/app/actions/project'
 import ProjectCard from '@/components/ProjectCard'
+import ShareButtons from '@/components/ShareButtons'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { ExternalLink, Eye, BarChart2 } from 'lucide-react'
+import { ExternalLink, Eye, BarChart2, Heart } from 'lucide-react'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -56,10 +58,13 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Header Image */}
               <div className="w-full aspect-[2/1] bg-gray-100 relative group">
                  {project.thumbnailUrl ? (
-                    <img 
+                    <Image 
                       src={project.thumbnailUrl} 
                       alt={project.title}
-                      className="w-full h-full object-cover" 
+                      fill
+                      className="object-cover"
+                      priority
+                      sizes="(max-width: 1280px) 100vw, 1280px"
                     />
                  ) : (
                     <div className="flex items-center justify-center h-full text-gray-300">No Image</div>
@@ -127,7 +132,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                              Fairness Stats
                           </h3>
                           
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-3 gap-3">
                              <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                                 <div className="text-gray-400 mb-1 flex justify-center"><Eye size={20}/></div>
                                 <span className="block text-2xl font-black text-gray-900">{project.viewCount.toLocaleString()}</span>
@@ -139,6 +144,12 @@ export default async function ProjectDetailPage({ params }: Props) {
                                 <span className="block text-2xl font-black text-blue-600">{project.impressionCount.toLocaleString()}</span>
                                 <span className="text-xs font-medium text-gray-500">Impressions</span>
                              </div>
+
+                             <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+                                <div className="text-red-400 mb-1 flex justify-center"><Heart size={20} className="fill-red-400"/></div>
+                                <span className="block text-2xl font-black text-red-600">{project.likeCount.toLocaleString()}</span>
+                                <span className="text-xs font-medium text-gray-500">Likes</span>
+                             </div>
                           </div>
                           
                           <div className="mt-6 pt-6 border-t border-gray-200">
@@ -147,6 +158,11 @@ export default async function ProjectDetailPage({ params }: Props) {
                              </p>
                           </div>
                        </div>
+
+                       <ShareButtons 
+                         title={project.title}
+                         url={`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/projects/${project.id}`}
+                       />
                     </div>
                  </div>
               </div>
