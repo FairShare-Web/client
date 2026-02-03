@@ -12,11 +12,11 @@ export default async function DashboardPage() {
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-blue-600">
              <LayoutDashboard size={32} />
           </div>
-          <h2 className="text-2xl font-black text-gray-900 mb-2">No Projects Yet</h2>
-          <p className="text-gray-500 mb-8">Start your journey by registering your first project. We'll ensure it gets fair exposure.</p>
+          <h2 className="text-2xl font-black text-gray-900 mb-2">등록된 프로젝트가 없습니다</h2>
+          <p className="text-gray-500 mb-8">새 프로젝트를 등록하고 공정한 노출을 경험해보세요.</p>
           <Link href="/projects/create" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-blue-200">
              <PlusCircle size={20} />
-             Create Project
+             프로젝트 등록
           </Link>
         </div>
       </div>
@@ -45,19 +45,19 @@ export default async function DashboardPage() {
                 <div className="p-2 bg-blue-600 rounded-lg text-white shadow-lg shadow-blue-200">
                    <LayoutDashboard size={24} />
                 </div>
-                <h1 className="text-3xl font-black text-gray-900 tracking-tight">Creator Dashboard</h1>
+                <h1 className="text-3xl font-black text-gray-900 tracking-tight">크리에이터 대시보드</h1>
              </div>
-             <p className="text-gray-500 font-medium ml-1">Track your performance and fair exposure metrics.</p>
+             <p className="text-gray-500 font-medium ml-1">내 프로젝트의 성과와 공정 노출 지표를 확인하세요.</p>
            </div>
            
            <div className="flex items-center gap-3">
              <Link href="/" className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
                <Home size={18} />
-               <span>Home</span>
+               <span>홈</span>
              </Link>
              <Link href="/projects/create" className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white border border-gray-900 rounded-xl font-bold hover:bg-gray-800 transition-all shadow-lg shadow-gray-200">
                <PlusCircle size={18} />
-               <span>New Project</span>
+               <span>새 프로젝트</span>
              </Link>
            </div>
         </header>
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
                  </div>
                  <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+12%</span>
               </div>
-              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Total Views</h3>
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">총 조회수</h3>
               <p className="text-3xl font-black text-gray-900">{totalViews.toLocaleString()}</p>
            </div>
 
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
                     <BarChart2 size={24} />
                  </div>
               </div>
-              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Fair Impressions</h3>
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">공정 노출수</h3>
               <p className="text-3xl font-black text-gray-900">{totalImpressions.toLocaleString()}</p>
            </div>
 
@@ -91,7 +91,7 @@ export default async function DashboardPage() {
                     <Heart size={24} className="fill-red-500" />
                  </div>
               </div>
-              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Total Likes</h3>
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">총 좋아요</h3>
               <p className="text-3xl font-black text-gray-900">{totalLikes.toLocaleString()}</p>
            </div>
 
@@ -101,20 +101,20 @@ export default async function DashboardPage() {
                     <TrendingUp size={24} />
                  </div>
               </div>
-              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Avg. CTR</h3>
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">평균 클릭률</h3>
               <p className="text-3xl font-black text-gray-900">{avgCtr.toFixed(1)}%</p>
            </div>
 
            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl shadow-xl shadow-blue-200 text-white relative overflow-hidden">
                <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
                <div className="relative z-10">
-                  <h3 className="text-blue-100 text-xs font-bold uppercase tracking-wider mb-2">Fairness Score</h3>
+                  <h3 className="text-blue-100 text-xs font-bold uppercase tracking-wider mb-2">공정성 점수</h3>
                   <div className="flex items-end gap-2 mb-1">
                      <p className="text-4xl font-black">{fairnessScore}</p>
                      <span className="text-sm font-medium text-blue-200 mb-1">/ 100</span>
                   </div>
                   <p className="text-xs text-blue-100 opacity-80 mt-2">
-                     Your projects are receiving {fairnessScore}% of the optimal fair exposure.
+                     당신의 프로젝트는 {fairnessScore}%의 공정 노출 효율을 보이고 있습니다.
                   </p>
                </div>
            </div>
@@ -123,19 +123,19 @@ export default async function DashboardPage() {
         {/* Project List */}
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
            <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-             <h3 className="text-xl font-bold text-gray-900">Project Performance</h3>
-             <button className="text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors">Download CSV</button>
+             <h3 className="text-xl font-bold text-gray-900">프로젝트 성과</h3>
+             <button className="text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors">CSV 다운로드</button>
            </div>
            <div className="overflow-x-auto">
              <table className="w-full text-left">
                <thead className="bg-gray-50/50">
                  <tr>
-                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Project Details</th>
-                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Views</th>
-                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Impressions</th>
-                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Likes</th>
-                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">CTR</th>
-                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Status</th>
+                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">프로젝트 정보</th>
+                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">조회수</th>
+                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">노출수</th>
+                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">좋아요</th>
+                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">클릭률</th>
+                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">상태</th>
                  </tr>
                </thead>
                <tbody className="divide-y divide-gray-100">
@@ -149,11 +149,11 @@ export default async function DashboardPage() {
                        <td className="px-8 py-6">
                          <div className="flex items-center gap-5">
                             <div className="w-16 h-12 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100 shadow-sm relative group-hover:shadow-md transition-all">
-                               {project.thumbnailUrl ? (
-                                 <img src={project.thumbnailUrl} className="w-full h-full object-cover" alt={project.title} />
-                               ) : (
-                                 <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No Img</div>
-                               )}
+                               <img 
+                                 src={project.thumbnailUrl || "https://er4yfn3hy6.ufs.sh/f/shQ06JBSD6tY1RUPmIrrpxRPq4HTDh6da5MlzGFwWKJVfyiE"} 
+                                 className="w-full h-full object-cover" 
+                                 alt={project.title} 
+                               />
                             </div>
                             <div>
                                <p className="font-bold text-gray-900 text-base">{project.title}</p>
@@ -187,7 +187,7 @@ export default async function DashboardPage() {
                        <td className="px-8 py-6 text-center">
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold border border-green-100">
                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                            Active
+                            활성
                           </span>
                        </td>
                      </tr>
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
            </div>
            
            <div className="p-8 border-t border-gray-100 bg-gray-50/50 text-center">
-              <p className="text-gray-400 text-sm">Showing {projects.length} projects</p>
+              <p className="text-gray-400 text-sm">총 {projects.length}개의 프로젝트</p>
            </div>
         </div>
       </div>

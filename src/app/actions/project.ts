@@ -184,11 +184,11 @@ export async function createProject(formData: FormData) {
 
   const title = formData.get('title') as string
   const description = formData.get('description') as string
-  const thumbnailUrl = formData.get('thumbnailUrl') as string
+  const thumbnailUrl = (formData.get('thumbnailUrl') as string) || "https://er4yfn3hy6.ufs.sh/f/shQ06JBSD6tY1RUPmIrrpxRPq4HTDh6da5MlzGFwWKJVfyiE"
   const projectUrl = formData.get('projectUrl') as string
   const category = formData.get('category') as string || 'Web'
 
-  if (!title || !description || !thumbnailUrl) {
+  if (!title || !description) {
      throw new Error('Missing required fields')
   }
 
@@ -205,9 +205,9 @@ export async function createProject(formData: FormData) {
     }
   })
 
-  // 3. Revalidate and Redirect
+  // 3. Revalidate
   revalidatePath('/')
-  redirect('/')
+  return { success: true }
 }
 
 export async function getCreatorStats() {
@@ -334,7 +334,7 @@ export async function likeProject(projectId: string) {
          })
 
          if (project && project.userId !== userId) {
-             const message = `Someone liked your project "${project.title}"`
+             const message = `누군가 회원님의 프로젝트 "${project.title}"를 좋아합니다`
              await tx.notification.create({
                  data: {
                      userId: project.userId,

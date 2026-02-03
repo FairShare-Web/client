@@ -40,9 +40,6 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
     const channel = pusherClient.subscribe(`user-${userId}`)
     
     channel.bind('notification', (data: any) => {
-      // When realtime notification comes, we don't have DB ID unless we sent it
-      // Let's assume we fetch latest or use temp ID
-      // To be safe and persistent, maybe fetching latest is better, but to be instant:
       const newNoti: Notification = {
           id: `temp-${Date.now()}`, 
           message: data.message,
@@ -78,7 +75,6 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
   }, [])
 
   const handleMarkAllRead = async () => {
-    const ids = notifications.filter(n => !n.read).map(n => n.id)
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
     setUnreadCount(0)
     await markAllNotificationsAsRead()
@@ -112,10 +108,10 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 max-h-[400px] overflow-y-auto">
           <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
-            <h3 className="font-bold text-gray-900 text-sm">Notifications</h3>
+            <h3 className="font-bold text-gray-900 text-sm">알림</h3>
             {unreadCount > 0 && (
                 <button onClick={handleMarkAllRead} className="text-xs text-blue-600 font-semibold hover:underline">
-                    Mark all read
+                    모두 읽음
                 </button>
             )}
           </div>
@@ -138,7 +134,7 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
           ) : (
              <div className="py-12 text-center text-gray-400 text-sm flex flex-col items-center">
                  <Bell size={24} className="mb-2 opacity-20" />
-                 No new notifications
+                 새로운 알림이 없습니다
              </div>
           )}
         </div>

@@ -24,19 +24,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         <div className="aspect-[4/3] bg-gray-50 flex items-center justify-center overflow-hidden relative">
-           {project.thumbnailUrl ? (
-             <Image 
-               src={project.thumbnailUrl} 
-               alt={project.title} 
-               fill
-               className="object-cover transition-transform duration-500 group-hover:scale-105"
-               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-             />
-           ) : (
-             <div className="text-gray-300 font-medium">No Image</div>
-           )}
+           <Image 
+             src={project.thumbnailUrl || "https://er4yfn3hy6.ufs.sh/f/shQ06JBSD6tY1RUPmIrrpxRPq4HTDh6da5MlzGFwWKJVfyiE"} 
+             alt={project.title} 
+             fill
+             className="object-cover transition-transform duration-500 group-hover:scale-105"
+             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+           />
            <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-              View details
+              자세히 보기
            </div>
         </div>
         <div className="p-5 flex flex-col flex-1 relative">
@@ -44,7 +40,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
            <div className="absolute -top-3 left-5 flex flex-col gap-1 items-start z-10">
                {isNewToday && (
                  <span className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-pink-200 border-2 border-white flex items-center gap-1.5 ring-1 ring-pink-50">
-                    <span>🔥</span> TODAY
+                    <span>🔥</span> 오늘
                  </span>
                )}
                
@@ -72,9 +68,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
            <div className="mt-auto pt-5 border-t border-gray-50/80">
              <div className="flex items-center justify-between gap-4 mb-3">
                <div className="flex flex-col">
-                 <span className="text-[10px] text-gray-400 font-semibold mb-0.5">Created by</span>
+                 <span className="text-[10px] text-gray-400 font-semibold mb-0.5">제작자</span>
                  <span className="text-xs text-gray-800 font-bold truncate max-w-[100px]">
-                   {project.user.name || 'Anonymous'}
+                   {project.user.name || '익명'}
                  </span>
                </div>
                

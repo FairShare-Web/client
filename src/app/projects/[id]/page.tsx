@@ -57,23 +57,19 @@ export default async function ProjectDetailPage({ params }: Props) {
               
               {/* Header Image */}
               <div className="w-full aspect-[2/1] bg-gray-100 relative group">
-                 {project.thumbnailUrl ? (
                     <Image 
-                      src={project.thumbnailUrl} 
+                      src={project.thumbnailUrl || "https://er4yfn3hy6.ufs.sh/f/shQ06JBSD6tY1RUPmIrrpxRPq4HTDh6da5MlzGFwWKJVfyiE"} 
                       alt={project.title}
                       fill
                       className="object-cover"
                       priority
                       sizes="(max-width: 1280px) 100vw, 1280px"
                     />
-                 ) : (
-                    <div className="flex items-center justify-center h-full text-gray-300">No Image</div>
-                 )}
                  
                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
 
                  <Link href="/" className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-sm font-bold text-gray-800 hover:bg-white transition-all shadow-lg flex items-center gap-2">
-                    &larr; Back to Fair List
+                    &larr; 목록으로 돌아가기
                  </Link>
                  
                  <div className="absolute bottom-6 left-6 md:left-10 text-white">
@@ -102,8 +98,8 @@ export default async function ProjectDetailPage({ params }: Props) {
                                 )}
                              </div>
                              <div>
-                                <p className="font-bold text-gray-900">{project.user.name || 'Anonymous'}</p>
-                                <p className="text-xs">Creator</p>
+                                <p className="font-bold text-gray-900">{project.user.name || '익명'}</p>
+                                <p className="text-xs">제작자</p>
                              </div>
                           </Link>
                           <span className="h-4 w-px bg-gray-300 mx-2"></span>
@@ -111,7 +107,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                        </div>
     
                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                         About this project
+                         프로젝트 소개
                        </h3>
                        <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap text-lg">
                           {project.description}
@@ -127,7 +123,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                             className="group block w-full bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95"
                           >
                              <div className="flex items-center justify-center gap-3 py-4 rounded-xl border-2 border-transparent group-hover:border-blue-400/30">
-                                <span className="font-bold text-lg">Visit Project</span>
+                                <span className="font-bold text-lg">프로젝트 방문하기</span>
                                 <ExternalLink size={20} />
                              </div>
                           </a>
@@ -136,32 +132,32 @@ export default async function ProjectDetailPage({ params }: Props) {
                        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-inner">
                           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2">
                              <BarChart2 size={14} />
-                             Fairness Stats
+                             노출/반응 통계
                           </h3>
                           
                           <div className="grid grid-cols-3 gap-3">
                              <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                                 <div className="text-gray-400 mb-1 flex justify-center"><Eye size={20}/></div>
                                 <span className="block text-2xl font-black text-gray-900">{project.viewCount.toLocaleString()}</span>
-                                <span className="text-xs font-medium text-gray-500">Views</span>
+                                <span className="text-xs font-medium text-gray-500">조회수</span>
                              </div>
                              
                              <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                                 <div className="text-blue-300 mb-1 flex justify-center"><BarChart2 size={20}/></div>
                                 <span className="block text-2xl font-black text-blue-600">{project.impressionCount.toLocaleString()}</span>
-                                <span className="text-xs font-medium text-gray-500">Impressions</span>
+                                <span className="text-xs font-medium text-gray-500">노출수</span>
                              </div>
 
                              <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                                 <div className="text-red-400 mb-1 flex justify-center"><Heart size={20} className="fill-red-400"/></div>
                                 <span className="block text-2xl font-black text-red-600">{project.likeCount.toLocaleString()}</span>
-                                <span className="text-xs font-medium text-gray-500">Likes</span>
+                                <span className="text-xs font-medium text-gray-500">좋아요</span>
                              </div>
                           </div>
                           
                           <div className="mt-6 pt-6 border-t border-gray-200">
                              <p className="text-xs text-center text-gray-400">
-                                This project is getting fair exposure based on visibility metrics.
+                                이 프로젝트는 공정한 노출 기회를 받고 있습니다.
                              </p>
                           </div>
                        </div>
@@ -180,10 +176,10 @@ export default async function ProjectDetailPage({ params }: Props) {
              <div className="mb-12">
                <div className="flex items-center justify-between mb-8">
                  <h2 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-                   <span className="text-blue-600">Fair</span> Recommendations
+                   <span className="text-blue-600">추천</span> 프로젝트
                  </h2>
                  <Link href={`/?category=${project.category}`} className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
-                   See more {project.category} &rarr;
+                   더 보기: {project.category} &rarr;
                  </Link>
                </div>
                

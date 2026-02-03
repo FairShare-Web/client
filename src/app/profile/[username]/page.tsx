@@ -28,7 +28,7 @@ export default async function ProfilePage({ params }: Props) {
         <div className="max-w-5xl mx-auto">
           <div className="flex items-start justify-between mb-8">
             <Link href="/" className="text-white/80 hover:text-white transition-colors text-sm font-semibold">
-              ← Back to Home
+              ← 홈으로
             </Link>
             {isOwnProfile && (
               <Link 
@@ -36,7 +36,7 @@ export default async function ProfilePage({ params }: Props) {
                 className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl font-bold transition-colors"
               >
                 <Edit size={16} />
-                Edit Profile
+                프로필 수정
               </Link>
             )}
           </div>
@@ -51,7 +51,7 @@ export default async function ProfilePage({ params }: Props) {
             </div>
 
             <div className="flex-1">
-              <h1 className="text-4xl font-black mb-2">{user.name || 'Anonymous Creator'}</h1>
+              <h1 className="text-4xl font-black mb-2">{user.name || '익명의 제작자'}</h1>
               <p className="text-blue-100 text-lg mb-4">@{user.username || user.id.slice(0, 8)}</p>
               
               {user.bio && (
@@ -72,7 +72,7 @@ export default async function ProfilePage({ params }: Props) {
                 )}
                 <div className="flex items-center gap-2 text-white/80">
                   <Calendar size={16} />
-                  Joined {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  {new Date(user.createdAt).toLocaleDateString('ko-KR')} 가입
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@ export default async function ProfilePage({ params }: Props) {
               <BarChart2 size={24} />
             </div>
             <div className="text-3xl font-black text-gray-900 text-center">{stats.totalProjects}</div>
-            <div className="text-sm text-gray-500 text-center mt-1">Projects</div>
+            <div className="text-sm text-gray-500 text-center mt-1">프로젝트</div>
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
@@ -96,7 +96,7 @@ export default async function ProfilePage({ params }: Props) {
               <Heart size={24} className="fill-red-400" />
             </div>
             <div className="text-3xl font-black text-gray-900 text-center">{stats.totalLikes.toLocaleString()}</div>
-            <div className="text-sm text-gray-500 text-center mt-1">Total Likes</div>
+            <div className="text-sm text-gray-500 text-center mt-1">총 좋아요</div>
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
@@ -104,7 +104,7 @@ export default async function ProfilePage({ params }: Props) {
               <Eye size={24} />
             </div>
             <div className="text-3xl font-black text-gray-900 text-center">{stats.totalViews.toLocaleString()}</div>
-            <div className="text-sm text-gray-500 text-center mt-1">Total Views</div>
+            <div className="text-sm text-gray-500 text-center mt-1">총 조회수</div>
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
@@ -112,14 +112,14 @@ export default async function ProfilePage({ params }: Props) {
               <BarChart2 size={24} />
             </div>
             <div className="text-3xl font-black text-gray-900 text-center">{stats.totalImpressions.toLocaleString()}</div>
-            <div className="text-sm text-gray-500 text-center mt-1">Impressions</div>
+            <div className="text-sm text-gray-500 text-center mt-1">총 노출수</div>
           </div>
         </div>
       </div>
 
       {/* Projects */}
       <div className="max-w-5xl mx-auto px-4 pb-12">
-        <h2 className="text-2xl font-black text-gray-900 mb-6">Projects</h2>
+        <h2 className="text-2xl font-black text-gray-900 mb-6">프로젝트 목록</h2>
         
         {user.projects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -130,9 +130,9 @@ export default async function ProfilePage({ params }: Props) {
         ) : (
           <div className="bg-white rounded-2xl p-12 text-center border border-gray-100">
             <div className="text-gray-300 text-5xl mb-4">📦</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No Projects Yet</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">등록된 프로젝트가 없습니다</h3>
             <p className="text-gray-500">
-              {isOwnProfile ? "Start sharing your work!" : "This creator hasn't shared any projects yet."}
+              {isOwnProfile ? "첫 프로젝트를 공유해보세요!" : "아직 등록된 프로젝트가 없습니다."}
             </p>
           </div>
         )}

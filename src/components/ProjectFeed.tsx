@@ -111,7 +111,7 @@ export default function ProjectFeed({ initialProjects, category }: ProjectFeedPr
         <div className="relative group">
           <input
             type="text"
-            placeholder="Search for fair projects..."
+            placeholder="  관심있는 프로젝트를 검색해보세요..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full pl-14 pr-6 py-5 bg-white border border-gray-100 rounded-3xl shadow-xl shadow-blue-900/5 focus:shadow-2xl focus:shadow-blue-500/10 focus:border-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all text-lg font-bold text-gray-800 placeholder:text-gray-300"
@@ -134,8 +134,8 @@ export default function ProjectFeed({ initialProjects, category }: ProjectFeedPr
           <div className="inline-block p-4 rounded-full bg-gray-50 mb-4">
              <Search size={48} className="text-gray-300" />
           </div>
-          <h3 className="text-2xl font-black text-gray-900 mb-2">No projects found</h3>
-          <p className="text-gray-500 font-medium">Try searching for something else</p>
+          <h3 className="text-2xl font-black text-gray-900 mb-2">검색 결과가 없습니다</h3>
+          <p className="text-gray-500 font-medium">다른 검색어로 찾아보세요</p>
         </div>
       )}
 

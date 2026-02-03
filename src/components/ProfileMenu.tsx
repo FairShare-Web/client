@@ -48,7 +48,7 @@ export default function ProfileMenu({ user, onSignOut }: ProfileMenuProps) {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
           <div className="px-4 py-3 border-b border-gray-100">
-            <p className="font-bold text-gray-900 text-sm">{user.name || 'Anonymous'}</p>
+            <p className="font-bold text-gray-900 text-sm">{user.name || '익명'}</p>
             <p className="text-xs text-gray-500">@{user.username || user.id.slice(0, 8)}</p>
           </div>
 

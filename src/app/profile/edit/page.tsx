@@ -53,7 +53,7 @@ export default function EditProfilePage() {
       }
     } catch (error) {
       console.error('Upload failed:', error)
-      alert('Image upload failed. Please try again.')
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.')
     } finally {
       setUploading(false)
     }
@@ -74,7 +74,7 @@ export default function EditProfilePage() {
       const username = formData.get('username') as string
       router.push(`/profile/${username || profile.id}`)
     } catch (err: any) {
-      setError(err.message || 'Failed to update profile')
+      setError(err.message || '프로필 수정에 실패했습니다')
       setSaving(false)
     }
   }
@@ -91,14 +91,14 @@ export default function EditProfilePage() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-3xl p-8 md:p-10 shadow-xl shadow-gray-200/50 border border-gray-100">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-gray-900 mb-3 tracking-tight">Edit Profile</h1>
-          <p className="text-gray-500 font-medium">Update your public information</p>
+          <h1 className="text-3xl font-black text-gray-900 mb-3 tracking-tight">프로필 수정</h1>
+          <p className="text-gray-500 font-medium">공개 정보를 수정하세요</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
-              Profile Image
+              프로필 이미지
             </label>
             
             <div className="flex flex-col items-center gap-4">
@@ -124,13 +124,13 @@ export default function EditProfilePage() {
                 )}
                 {uploading && (
                   <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
-                    <div className="text-white text-xs font-bold">Uploading...</div>
+                    <div className="text-white text-xs font-bold">업로드 중...</div>
                   </div>
                 )}
               </div>
               
               <label className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl cursor-pointer transition-colors">
-                Choose Image
+                이미지 선택
                 <input 
                   type="file"
                   accept="image/*"
@@ -143,49 +143,49 @@ export default function EditProfilePage() {
 
           <div className="space-y-2">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
-              Display Name
+              이름
             </label>
             <input 
               name="name" 
               defaultValue={profile?.name || ''}
-              placeholder="Your Name" 
+              placeholder="이름" 
               className="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-semibold text-gray-800 placeholder:text-gray-300" 
             />
           </div>
 
           <div className="space-y-2">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
-              Username
+              아이디
             </label>
             <input 
               name="username" 
               defaultValue={profile?.username || ''}
               placeholder="username" 
               pattern="[a-zA-Z0-9_-]+"
-              title="Only letters, numbers, underscores and hyphens"
+              title="영문, 숫자, 밑줄, 하이픈만 사용할 수 있습니다"
               className="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-semibold text-gray-800 placeholder:text-gray-300" 
             />
             <p className="text-xs text-gray-400 ml-1">
-              Your profile will be at: fairshare.com/profile/username
+              프로필 주소: fairshare.com/profile/아이디
             </p>
           </div>
 
           <div className="space-y-2">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
-              Bio
+              소개
             </label>
             <textarea 
               name="bio" 
               defaultValue={profile?.bio || ''}
               rows={4} 
-              placeholder="Tell us about yourself..." 
+              placeholder="자신을 소개해보세요..." 
               className="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-800 placeholder:text-gray-300 resize-none" 
             />
           </div>
 
           <div className="space-y-2">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">
-              Website
+              웹사이트
             </label>
             <input 
               name="website" 
@@ -208,14 +208,14 @@ export default function EditProfilePage() {
               disabled={saving}
               className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-lg rounded-2xl transition-all shadow-lg shadow-blue-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? '저장 중...' : '변경사항 저장'}
             </button>
 
             <Link 
               href={`/profile/${profile?.username || profile?.id}`}
               className="block w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-center rounded-2xl transition-all"
             >
-              Cancel
+              취소
             </Link>
           </div>
         </form>

@@ -78,7 +78,7 @@ model Project {
   id              String          @id @default(cuid())
   title           String
   description     String
-  thumbnailUrl    String
+  thumbnailUrl    String          @default("https://er4yfn3hy6.ufs.sh/f/shQ06JBSD6tY1RUPmIrrpxRPq4HTDh6da5MlzGFwWKJVfyiE")
   projectUrl      String?
   category        String          @default("General")
   viewCount       Int             @default(0)
