@@ -23,6 +23,7 @@ model Project {
   description     String
   thumbnailUrl    String
   projectUrl      String?
+  category        String          @default("Uncategorized")
   viewCount       Int             @default(0)
   impressionCount Int             @default(0)
   userId          String

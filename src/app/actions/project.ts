@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-export async function getFairProjects() {
+export async function getFairProjects(category?: string) {
   // Strategy:
   // 1. Fetch a pool of projects with the lowest impression counts
   // 2. Randomly select a subset to display
@@ -14,8 +14,11 @@ export async function getFairProjects() {
   const DISPLAY_COUNT = 12
 
   try {
+    const whereClause = category && category !== 'All' ? { category } : {}
+
     // 1. Fetch pool
     const candidates = await prisma.project.findMany({
+      where: whereClause,
       orderBy: {
         impressionCount: 'asc',
       },
@@ -85,6 +88,7 @@ export async function createProject(formData: FormData) {
   const description = formData.get('description') as string
   const thumbnailUrl = formData.get('thumbnailUrl') as string
   const projectUrl = formData.get('projectUrl') as string
+  const category = formData.get('category') as string || 'Web'
 
   if (!title || !description || !thumbnailUrl) {
     throw new Error('Missing required fields')
@@ -108,6 +112,7 @@ export async function createProject(formData: FormData) {
       description,
       thumbnailUrl,
       projectUrl,
+      category,
       userId: user.id,
       // Default viewCount, impressionCount is 0
     }
@@ -116,5 +121,25 @@ export async function createProject(formData: FormData) {
   // 3. Revalidate and Redirect
   revalidatePath('/')
   redirect('/')
+}
+
+export async function getCreatorStats() {
+  try {
+    // For now, use the first user as the "logged in" user
+    const user = await prisma.user.findFirst({
+        include: {
+            projects: {
+                orderBy: { createdAt: 'desc' }
+            }
+        }
+    })
+
+    if (!user) return null
+
+    return user.projects
+  } catch (error) {
+    console.error('Failed to fetch stats:', error)
+    return null
+  }
 }
 
