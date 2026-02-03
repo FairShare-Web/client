@@ -1,7 +1,8 @@
-import { auth, signIn, signOut } from '@/auth'
+import { auth } from '@/auth'
 import { getFairProjects } from '@/app/actions/project'
 import ProjectCard from '@/components/ProjectCard'
 import Navigation from '@/components/Navigation'
+import ProjectFeed from '@/components/ProjectFeed'
 import Link from 'next/link'
 
 export const revalidate = 0
@@ -15,7 +16,7 @@ export default async function MainPage(props: MainPageProps) {
   const session = await auth()
   const searchParams = await props.searchParams
   const category = searchParams.category || 'All'
-  const projects = await getFairProjects(category)
+  const initialProjects = await getFairProjects({ category, limit: 12 })
 
   const categoryMap: Record<string, string> = {
     'All': '전체',
@@ -80,22 +81,7 @@ export default async function MainPage(props: MainPageProps) {
              </div>
           </header>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-             {projects.map(project => (
-               <ProjectCard key={project.id} project={project} />
-             ))}
-          </div>
-
-          {projects.length === 0 && (
-             <div className="mt-12 p-12 text-center bg-white rounded-3xl border border-dashed border-gray-200">
-                <div className="mb-4 text-4xl">🌱</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">No Projects in {category}</h3>
-                <p className="text-gray-500 mb-6">Be the first to share your work in this category.</p>
-                <Link href="/projects/create" className="text-blue-600 font-semibold hover:underline">
-                  Start your journey &rarr;
-                </Link>
-             </div>
-          )}
+           <ProjectFeed initialProjects={initialProjects as any} category={category} />
        </div>
 
        <footer className="bg-white border-t border-gray-100 py-8 mt-20">

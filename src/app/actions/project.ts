@@ -5,17 +5,44 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 
-export async function getFairProjects(category?: string) {
+interface GetProjectsOptions {
+  limit?: number
+  excludeIds?: string[]
+  query?: string
+  category?: string
+}
+
+export async function getFairProjects(options: GetProjectsOptions = {}) {
+  const { limit = 12, excludeIds = [], query = '', category = 'All' } = options
+
   // Strategy:
-  // 1. Fetch a pool of projects with the lowest impression counts
-  // 2. Randomly select a subset to display
-  // 3. Increment impression counts for the displayed projects
-  
-  const POOL_SIZE = 50
-  const DISPLAY_COUNT = 12
+  // 1. Fetch a pool of projects based on query and category, excluding seen IDs
+  // 2. Sort by impressionCount for fairness
+  // 3. Randomly select specific number from the top pool to ensure variety within the fair tier
+  // 4. Increment impression counts
+
+  const POOL_SIZE = Math.max(50, limit * 2)
 
   try {
-    const whereClause = category && category !== 'All' ? { category } : {}
+    const whereClause: any = {
+      id: { notIn: excludeIds }
+    }
+
+    if (category && category !== 'All') {
+      whereClause.category = category
+    }
+
+    if (query) {
+      const searchTerms = query.trim().split(/\s+/).join(' & ')
+      whereClause.OR = [
+        // Full-text search (Postgres)
+        { title: { search: searchTerms } },
+        { description: { search: searchTerms } },
+        // Fallback/Partial match
+        { title: { contains: query, mode: 'insensitive' } },
+        { description: { contains: query, mode: 'insensitive' } }
+      ]
+    }
 
     // 1. Fetch pool
     const candidates = await prisma.project.findMany({
@@ -25,7 +52,7 @@ export async function getFairProjects(category?: string) {
       },
       take: POOL_SIZE,
       include: {
-        user: true, // Need creator info
+        user: true, 
       },
     })
 
@@ -33,17 +60,20 @@ export async function getFairProjects(category?: string) {
       return []
     }
 
-    // 2. Shuffle and Select
-    // A simple shuffle
-    const shuffled = candidates.sort(() => 0.5 - Math.random())
-    const selected = shuffled.slice(0, DISPLAY_COUNT)
+    // 2. Shuffle and Select (Fairness + Variety)
+    // If we have few results (e.g. search), just return them.
+    // If we have many, pick randomly from the "fairest" pool to avoid strict deterministic order always showing same projects
+    let selected = candidates
+    if (candidates.length > limit) {
+        const shuffled = candidates.sort(() => 0.5 - Math.random())
+        selected = shuffled.slice(0, limit)
+    }
 
-    // 3. Increment Impressions
-    // We update in background or await. Await ensures accuracy but adds latency.
-    // Given the requirement "when exposed... increment", doing it here is correct.
-    const ids = selected.map((p: { id: string }) => p.id)
+    // 3. Increment Impressions (Background-ish)
+    const ids = selected.map((p) => p.id)
     
     if (ids.length > 0) {
+      // Use wait to ensure data consistency for tests/fast reloads, though could be fire-and-forget in prod
       await prisma.project.updateMany({
         where: {
           id: { in: ids },
