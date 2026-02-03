@@ -1,0 +1,40 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id              String          @id @default(cuid())
+  title           String
+  description     String
+  thumbnailUrl    String
+  projectUrl      String?
+  viewCount       Int             @default(0)
+  impressionCount Int             @default(0)
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  impressions     ImpressionLog[]
+}
+
+model ImpressionLog {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
+}
