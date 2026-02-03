@@ -83,7 +83,16 @@ export async function getProject(id: string) {
   }
 }
 
+import { auth } from '@/auth'
+
+// ... existing imports ...
+
 export async function createProject(formData: FormData) {
+  const session = await auth()
+  if (!session?.user?.id) {
+    throw new Error('Unauthorized')
+  }
+
   const title = formData.get('title') as string
   const description = formData.get('description') as string
   const thumbnailUrl = formData.get('thumbnailUrl') as string
@@ -91,21 +100,10 @@ export async function createProject(formData: FormData) {
   const category = formData.get('category') as string || 'Web'
 
   if (!title || !description || !thumbnailUrl) {
-    throw new Error('Missing required fields')
+     throw new Error('Missing required fields')
   }
 
-  // 1. Get or Create Dummy User (No Auth in requirements)
-  let user = await prisma.user.findFirst()
-  if (!user) {
-    user = await prisma.user.create({
-      data: {
-        email: 'creator@fairshare.com',
-        name: 'Early Creator',
-      }
-    })
-  }
-
-  // 2. Create Project
+  // Create Project linked to authenticated user
   await prisma.project.create({
     data: {
       title,
@@ -113,7 +111,7 @@ export async function createProject(formData: FormData) {
       thumbnailUrl,
       projectUrl,
       category,
-      userId: user.id,
+      userId: session.user.id,
       // Default viewCount, impressionCount is 0
     }
   })
@@ -124,9 +122,13 @@ export async function createProject(formData: FormData) {
 }
 
 export async function getCreatorStats() {
+  const session = await auth()
+  
+  if (!session?.user?.id) return null
+
   try {
-    // For now, use the first user as the "logged in" user
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
         include: {
             projects: {
                 orderBy: { createdAt: 'desc' }
