@@ -1,6 +1,6 @@
 'use client'
 
-import { signIn, signOut } from '@/app/actions/auth'
+import { signOut } from '@/app/actions/auth' 
 import ProfileMenu from './ProfileMenu'
 import NotificationDropdown from './NotificationDropdown'
 import Link from 'next/link'
@@ -12,10 +12,6 @@ interface NavigationProps {
 export default function Navigation({ session }: NavigationProps) {
   const handleSignOut = async () => {
     await signOut()
-  }
-
-  const handleSignIn = async () => {
-    await signIn()
   }
 
   return (
@@ -45,12 +41,12 @@ export default function Navigation({ session }: NavigationProps) {
               />
             </>
           ) : (
-            <button 
-              onClick={handleSignIn}
+            <Link 
+              href="/login"
               className="px-5 py-2.5 bg-gray-900 hover:bg-black text-white text-sm font-bold rounded-xl transition-colors shadow-sm cursor-pointer active:scale-95"
             >
               로그인 / 시작하기
-            </button>
+            </Link>
           )}
         </div>
       </div>

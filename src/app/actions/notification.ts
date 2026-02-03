@@ -56,3 +56,20 @@ export async function markAllNotificationsAsRead() {
      console.error('Failed to read all notifications:', error)
    }
 }
+
+export async function deleteNotification(id: string) {
+   const session = await auth()
+   if (!session?.user?.id) return
+
+   try {
+     await prisma.notification.delete({
+       where: { 
+         id,
+         userId: session.user.id
+       }
+     })
+     revalidatePath('/')
+   } catch (error) {
+     console.error('Failed to delete notification:', error)
+   }
+}

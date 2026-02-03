@@ -24,10 +24,10 @@ export default async function ProfilePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white py-16 px-4">
+      <div className="text-gray-900 py-16 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-start justify-between mb-8">
-            <Link href="/" className="text-white/80 hover:text-white transition-colors text-sm font-semibold">
+            <Link href="/" className="text-gray-900/80 hover:text-gray-900 transition-colors text-sm font-semibold">
               ← 홈으로
             </Link>
             {isOwnProfile && (
@@ -52,10 +52,10 @@ export default async function ProfilePage({ params }: Props) {
 
             <div className="flex-1">
               <h1 className="text-4xl font-black mb-2">{user.name || '익명의 제작자'}</h1>
-              <p className="text-blue-100 text-lg mb-4">@{user.username || user.id.slice(0, 8)}</p>
+              <p className="text-gray-900 text-lg mb-4">@{user.username || user.id.slice(0, 8)}</p>
               
               {user.bio && (
-                <p className="text-white/90 text-lg mb-4 max-w-2xl">{user.bio}</p>
+                <p className="text-gray-900 text-lg mb-4 max-w-2xl">{user.bio}</p>
               )}
 
               <div className="flex flex-wrap gap-4 text-sm">
@@ -64,13 +64,13 @@ export default async function ProfilePage({ params }: Props) {
                     href={user.website} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-gray-900/80 hover:text-gray-900 transition-colors"
                   >
                     <Globe size={16} />
                     {user.website.replace(/^https?:\/\//, '')}
                   </a>
                 )}
-                <div className="flex items-center gap-2 text-white/80">
+                <div className="flex items-center gap-2 text-gray-900/80">
                   <Calendar size={16} />
                   {new Date(user.createdAt).toLocaleDateString('ko-KR')} 가입
                 </div>

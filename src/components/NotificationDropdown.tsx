@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Bell } from 'lucide-react'
+import { Bell, X } from 'lucide-react'
 import { pusherClient } from '@/lib/pusher'
-import { getNotifications, markAllNotificationsAsRead, markNotificationAsRead } from '@/app/actions/notification'
+import { getNotifications, markAllNotificationsAsRead, markNotificationAsRead, deleteNotification } from '@/app/actions/notification'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -23,7 +23,6 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
   const menuRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  // Fetch initial notifications
   useEffect(() => {
     getNotifications().then(data => {
         setNotifications(data.map(n => ({
@@ -33,7 +32,6 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
     })
   }, [])
 
-  // Subscribe to Pusher
   useEffect(() => {
     if (!userId) return
 
@@ -58,12 +56,10 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
     }
   }, [userId])
 
-  // Count unread
   useEffect(() => {
     setUnreadCount(notifications.filter(n => !n.read).length)
   }, [notifications])
 
-  // Close on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -89,6 +85,14 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
       }
       setIsOpen(false)
       if (noti.link) router.push(noti.link)
+  }
+
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation()
+    setNotifications(prev => prev.filter(n => n.id !== id))
+    if (!id.startsWith('temp')) {
+      await deleteNotification(id)
+    }
   }
 
   return (
@@ -122,12 +126,21 @@ export default function NotificationDropdown({ userId }: { userId: string }) {
                  <div 
                    key={noti.id}
                    onClick={() => handleNotificationClick(noti)}
-                   className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors border-l-4 flex flex-col gap-1 ${noti.read ? 'border-transparent opacity-60' : 'border-blue-500 bg-blue-50/10'}`}
+                   className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors border-l-4 flex gap-3 items-start relative group ${noti.read ? 'border-transparent opacity-60' : 'border-blue-500 bg-blue-50/10'}`}
                  >
-                    <p className="text-sm text-gray-800 font-medium leading-snug">{noti.message}</p>
-                    <p className="text-[10px] text-gray-400 font-semibold">
-                        {new Date(noti.createdAt).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}
-                    </p>
+                    <div className="flex-1 flex flex-col gap-1">
+                        <p className="text-sm text-gray-800 font-medium leading-snug">{noti.message}</p>
+                        <p className="text-[10px] text-gray-400 font-semibold">
+                            {new Date(noti.createdAt).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}
+                        </p>
+                    </div>
+                    <button
+                        onClick={(e) => handleDelete(e, noti.id)}
+                        className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                        title="알림 삭제"
+                    >
+                        <X size={14} />
+                    </button>
                  </div>
                ))}
              </div>

@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer'
 import { getFairProjects } from '@/app/actions/project'
 import ProjectCard from './ProjectCard'
 import { Project, User } from '@/generated/prisma/client'
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 
 type ProjectWithUser = Project & { user: User }
 
@@ -21,17 +21,14 @@ export default function ProjectFeed({ initialProjects, category }: ProjectFeedPr
   const [loading, setLoading] = useState(false)
   const { ref, inView } = useInView()
   
-  // Use a ref to keep track of loading state to prevent double-firing
   const isLoadingRef = useRef(false)
 
-  // Load more function
   const loadMore = useCallback(async () => {
     if (isLoadingRef.current || !hasMore) return
     isLoadingRef.current = true
     setLoading(true)
 
     try {
-      // Exclude IDs to prevent duplicates in fair exposure logic
       const excludeIds = projects.map(p => p.id)
       
       const newProjects = await getFairProjects({
@@ -49,7 +46,6 @@ export default function ProjectFeed({ initialProjects, category }: ProjectFeedPr
             const uniqueNew = newProjects.filter(p => !existingIds.has(p.id))
             if (uniqueNew.length < 12) {
                // If we got fewer than requested, likely no more
-               // But 'getFairProjects' might return partial if filtered
             }
             return [...prev, ...uniqueNew]
         })
@@ -62,23 +58,19 @@ export default function ProjectFeed({ initialProjects, category }: ProjectFeedPr
     }
   }, [hasMore, projects, query, category])
 
-  // Infinite scroll trigger
   useEffect(() => {
     if (inView) {
       loadMore()
     }
   }, [inView, loadMore])
 
-  // Handling search input
-  // Debouncing could be added, but for now we search on typing with delay or explicit submit
-  // Let's implement simple debounce effect
   useEffect(() => {
     const timer = setTimeout(async () => {
-        if (query === '' && projects === initialProjects) return // Initial state
+        if (query === '' && projects === initialProjects) return 
         
         isLoadingRef.current = true
         setLoading(true)
-        // Reset when query changes
+        
         try {
            const results = await getFairProjects({
              limit: 12,
@@ -95,9 +87,8 @@ export default function ProjectFeed({ initialProjects, category }: ProjectFeedPr
     }, 500)
 
     return () => clearTimeout(timer)
-  }, [query, category]) // Note: removed initialProjects dependency to avoid circular reset
+  }, [query, category])
 
-  // Re-sync when simple category prop changes (if parent drives it)
   useEffect(() => {
       setProjects(initialProjects)
       setQuery('')
@@ -111,14 +102,23 @@ export default function ProjectFeed({ initialProjects, category }: ProjectFeedPr
         <div className="relative group">
           <input
             type="text"
-            placeholder="  관심있는 프로젝트를 검색해보세요..."
+            placeholder="관심있는 프로젝트를 검색해보세요..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full pl-14 pr-6 py-5 bg-white border border-gray-100 rounded-3xl shadow-xl shadow-blue-900/5 focus:shadow-2xl focus:shadow-blue-500/10 focus:border-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all text-lg font-bold text-gray-800 placeholder:text-gray-300"
+            className="w-full pl-20 pr-14 py-5 bg-white border border-gray-100 rounded-3xl shadow-xl shadow-blue-900/5 focus:shadow-2xl focus:shadow-blue-500/10 focus:border-blue-500/20 focus:outline-none focus:ring-4 focus:ring-blue-500/5 transition-all text-lg font-bold text-gray-800 placeholder:text-gray-300"
           />
           <div className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 group-focus-within:bg-blue-500 group-focus-within:text-white transition-colors duration-300">
              <Search size={20} className="stroke-[3px]" />
           </div>
+          
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="absolute right-5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-800 flex items-center justify-center transition-colors z-10"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
       </div>
 

@@ -38,25 +38,10 @@ export default async function MainPage(props: MainPageProps) {
 
        <div className="flex-1 max-w-screen-xl mx-auto px-4 py-12 w-full">
           <header className="mb-12 text-center max-w-2xl mx-auto relative">
-             <div className="absolute top-0 right-0 -mt-4 hidden lg:block">
-                 <div className="bg-blue-50 text-blue-800 text-xs font-bold px-3 py-2 rounded-lg border border-blue-100 shadow-sm max-w-[200px] text-left">
-                    💡 공정한 노출이란?
-                    <p className="font-medium text-blue-700 mt-1 leading-normal">
-                      아직 빛을 보지 못한 <span className="underline decoration-dotted">숨은 보석</span>들에게 우선적으로 기회를 줍니다.
-                    </p>
-                 </div>
-             </div>
-
              <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight">
                Fair Exposure for <br/>
                <span className="text-blue-600">Every Creator</span>
              </h1>
-
-             <div className="mb-8 inline-block bg-blue-50/50 border border-blue-100 rounded-full px-4 py-1.5">
-               <p className="text-sm font-medium text-blue-800">
-                 ✨ 페어쉐어 알고리즘에 의해 노출 기회가 적은 프로젝트를 우선적으로 조명합니다.
-               </p>
-             </div>
 
              <p className="text-lg text-gray-500 leading-relaxed mb-8">
                모든 프로젝트는 주목받을 자격이 있습니다. <br className="hidden md:inline"/>
