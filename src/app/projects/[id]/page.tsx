@@ -90,15 +90,22 @@ export default async function ProjectDetailPage({ params }: Props) {
                  <div className="flex flex-col lg:flex-row gap-12">
                     <div className="lg:w-2/3">
                        <div className="flex items-center gap-4 text-sm text-gray-500 mb-8 pb-8 border-b border-gray-100">
-                          <div className="flex items-center gap-2">
+                          <Link 
+                            href={`/profile/${project.user.username || project.user.id}`}
+                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                          >
                              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                {project.user.name?.[0] || 'A'}
+                                {project.user.image ? (
+                                  <img src={project.user.image} alt={project.user.name || 'User'} className="w-full h-full rounded-full object-cover" />
+                                ) : (
+                                  project.user.name?.[0] || 'A'
+                                )}
                              </div>
                              <div>
                                 <p className="font-bold text-gray-900">{project.user.name || 'Anonymous'}</p>
                                 <p className="text-xs">Creator</p>
                              </div>
-                          </div>
+                          </Link>
                           <span className="h-4 w-px bg-gray-300 mx-2"></span>
                           <span>{new Date(project.createdAt).toLocaleDateString()}</span>
                        </div>

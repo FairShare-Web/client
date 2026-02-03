@@ -1,6 +1,7 @@
 import { auth, signIn, signOut } from '@/auth'
 import { getFairProjects } from '@/app/actions/project'
 import ProjectCard from '@/components/ProjectCard'
+import Navigation from '@/components/Navigation'
 import Link from 'next/link'
 
 export const revalidate = 0
@@ -32,40 +33,7 @@ export default async function MainPage(props: MainPageProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
        {/* Navigation Bar */}
-       <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 bg-opacity-80 backdrop-blur-md">
-         <div className="max-w-screen-xl mx-auto px-4 h-16 flex items-center justify-between">
-            <Link href="/" className="text-xl font-black text-blue-600 tracking-tighter hover:opacity-80 transition-opacity">FairShare</Link>
-            <div className="flex items-center gap-4">
-               {session ? (
-                 <>
-                   <Link href="/dashboard" className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors">
-                     대시보드
-                   </Link>
-                   <form action={async () => {
-                     'use server'
-                     await signOut()
-                   }}>
-                     <button className="text-sm font-bold text-red-500 hover:text-red-700 transition-colors">
-                       로그아웃
-                     </button>
-                   </form>
-                   <Link href="/projects/create" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm cursor-pointer active:scale-95">
-                     프로젝트 등록
-                   </Link>
-                 </>
-               ) : (
-                 <form action={async () => {
-                   'use server'
-                   await signIn()
-                 }}>
-                   <button className="px-5 py-2.5 bg-gray-900 hover:bg-black text-white text-sm font-bold rounded-xl transition-colors shadow-sm cursor-pointer active:scale-95">
-                     로그인 / 시작하기
-                   </button>
-                 </form>
-               )}
-            </div>
-         </div>
-       </nav>
+       <Navigation session={session} />
 
        <div className="flex-1 max-w-screen-xl mx-auto px-4 py-12 w-full">
           <header className="mb-12 text-center max-w-2xl mx-auto relative">
