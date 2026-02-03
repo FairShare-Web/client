@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
+import { pusherServer } from '@/lib/pusher'
 
 interface GetProjectsOptions {
   limit?: number
@@ -13,6 +14,7 @@ interface GetProjectsOptions {
 }
 
 export async function getFairProjects(options: GetProjectsOptions = {}) {
+  const session = await auth()
   const { limit = 12, excludeIds = [], query = '', category = 'All' } = options
 
   // Strategy:
@@ -86,6 +88,17 @@ export async function getFairProjects(options: GetProjectsOptions = {}) {
       })
     }
 
+    if (session?.user?.id) {
+        const userLikes = await prisma.likeLog.findMany({
+            where: {
+                userId: session.user.id,
+                projectId: { in: ids }
+            }
+        })
+        const likedSet = new Set(userLikes.map(l => l.projectId))
+        return selected.map(p => ({ ...p, isLiked: likedSet.has(p.id) }))
+    }
+
     return selected
   } catch (error) {
     console.error('Failed to fetch fair projects:', error)
@@ -147,7 +160,15 @@ export async function getProject(id: string) {
     // For anonymous users, we don't count views to prevent abuse
     // Only logged-in members get counted as per requirement
 
-    return project
+    let isLiked = false
+    if (userId) {
+        const like = await prisma.likeLog.findUnique({
+            where: { userId_projectId: { userId, projectId: id } }
+        })
+        isLiked = !!like
+    }
+
+    return { ...project, isLiked }
   } catch (error) {
     console.error('Failed to get project:', error)
     return null
@@ -214,24 +235,22 @@ export async function getCreatorStats() {
 }
 
 export async function getRelatedProjects(currentProjectId: string, category: string) {
+  const session = await auth()
   try {
     const related = await prisma.project.findMany({
       where: {
         AND: [
-          { category: category }, // Try to match category
-          { id: { not: currentProjectId } } // Exclude current
+          { category: category }, 
+          { id: { not: currentProjectId } } 
         ]
       },
-      orderBy: {
-        impressionCount: 'asc' // Prioritize fairness
-      },
+      orderBy: { impressionCount: 'asc' },
       take: 3,
-      include: {
-        user: true
-      }
+      include: { user: true }
     })
 
-    // If not enough related projects, fill with any fair projects
+    let finalProjects = related
+
     if (related.length < 3) {
        const others = await prisma.project.findMany({
           where: {
@@ -243,10 +262,22 @@ export async function getRelatedProjects(currentProjectId: string, category: str
           take: 3 - related.length,
           include: { user: true }
        })
-       return [...related, ...others]
+       finalProjects = [...related, ...others]
     }
 
-    return related
+    if (session?.user?.id) {
+        const userLikes = await prisma.likeLog.findMany({
+            where: {
+                userId: session.user.id,
+                projectId: { in: finalProjects.map(p => p.id) }
+            },
+            select: { projectId: true }
+        })
+        const likedSet = new Set(userLikes.map(l => l.projectId))
+        return finalProjects.map(p => ({ ...p, isLiked: likedSet.has(p.id) }))
+    }
+
+    return finalProjects
   } catch (error) {
     console.error('Failed to fetch related projects', error)
     return []
@@ -263,6 +294,8 @@ export async function likeProject(projectId: string) {
   const userId = session.user.id
 
   try {
+    let notificationData: { userId: string, message: string, link: string } | null = null
+
     // Transaction to ensure atomicity
     await prisma.$transaction(async (tx) => {
        const existingLike = await tx.likeLog.findUnique({
@@ -275,10 +308,7 @@ export async function likeProject(projectId: string) {
        })
 
        if (existingLike) {
-         // Already liked. Toggle off? Or just do nothing?
-         // Usually "like" is a toggle. Let's make it a toggle (Like/Unlike) or just ignore duplicates?
-         // Request says "count 1". Usually implies duplicate prevention.
-         // Let's implement TOGGLE behavior for better UX.
+         // Already liked. Toggle off
          await tx.likeLog.delete({
             where: {
                 userId_projectId: { userId, projectId }
@@ -297,8 +327,39 @@ export async function likeProject(projectId: string) {
             where: { id: projectId },
             data: { likeCount: { increment: 1 } }
          })
+
+         // Create Notification
+         const project = await tx.project.findUnique({
+             where: { id: projectId }
+         })
+
+         if (project && project.userId !== userId) {
+             const message = `Someone liked your project "${project.title}"`
+             await tx.notification.create({
+                 data: {
+                     userId: project.userId,
+                     type: 'LIKE',
+                     message,
+                     link: `/projects/${projectId}`
+                 }
+             })
+             notificationData = {
+                 userId: project.userId,
+                 message,
+                 link: `/projects/${projectId}`
+             }
+         }
        }
     })
+
+    if (notificationData) {
+        try {
+            // @ts-ignore
+            await pusherServer.trigger(`user-${notificationData.userId}`, 'notification', notificationData)
+        } catch (pusherError) {
+            console.warn('Failed to send realtime notification. Check Pusher config in .env:', pusherError)
+        }
+    }
 
     revalidatePath('/')
     revalidatePath(`/projects/${projectId}`)

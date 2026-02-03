@@ -4,7 +4,7 @@ import { Project, User } from '@/generated/prisma/client'
 import LikeButton from './LikeButton'
 
 interface ProjectCardProps {
-  project: Project & { user: User }
+  project: Project & { user: User; isLiked?: boolean }
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
@@ -16,7 +16,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         
         {/* Like Button positioned absolutely */}
         <div className="absolute top-3 right-3 z-20">
-           <LikeButton projectId={project.id} initialLikes={project.likeCount} />
+           <LikeButton 
+             projectId={project.id} 
+             initialLikes={project.likeCount} 
+             initialLiked={project.isLiked}
+           />
         </div>
 
         <div className="aspect-[4/3] bg-gray-50 flex items-center justify-center overflow-hidden relative">

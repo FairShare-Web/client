@@ -2,6 +2,7 @@
 
 import { signIn, signOut } from '@/app/actions/auth'
 import ProfileMenu from './ProfileMenu'
+import NotificationDropdown from './NotificationDropdown'
 import Link from 'next/link'
 
 interface NavigationProps {
@@ -32,6 +33,7 @@ export default function Navigation({ session }: NavigationProps) {
               >
                 프로젝트 등록
               </Link>
+              <NotificationDropdown userId={session.user.id} />
               <ProfileMenu 
                 user={{
                   id: session.user.id,
