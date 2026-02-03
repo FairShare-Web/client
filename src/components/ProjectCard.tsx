@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Project, User } from '@/generated/prisma/client'
 import LikeButton from './LikeButton'
 
@@ -20,10 +21,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
         <div className="aspect-[4/3] bg-gray-50 flex items-center justify-center overflow-hidden relative">
            {project.thumbnailUrl ? (
-             <img 
+             <Image 
                src={project.thumbnailUrl} 
                alt={project.title} 
-               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+               fill
+               className="object-cover transition-transform duration-500 group-hover:scale-105"
+               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
              />
            ) : (
              <div className="text-gray-300 font-medium">No Image</div>
