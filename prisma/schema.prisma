@@ -17,6 +17,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   projects      Project[]
+  viewLogs      ViewLog[]
+  likeLogs      LikeLog[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -71,6 +73,8 @@ model Project {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   impressions     ImpressionLog[]
+  viewLogs        ViewLog[]
+  likeLogs        LikeLog[]
 }
 
 model ImpressionLog {
@@ -78,4 +82,26 @@ model ImpressionLog {
   projectId String
   project   Project  @relation(fields: [projectId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model ViewLog {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  user      User     @relation(fields: [userId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, projectId])
+}
+
+model LikeLog {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  user      User     @relation(fields: [userId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, projectId])
 }

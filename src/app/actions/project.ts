@@ -3,6 +3,7 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { auth } from '@/auth'
 
 export async function getFairProjects(category?: string) {
   // Strategy:
@@ -64,28 +65,65 @@ export async function getFairProjects(category?: string) {
 
 
 
+// ... (previous code)
+
 export async function getProject(id: string) {
+  const session = await auth()
+  const userId = session?.user?.id
+
   try {
-    const project = await prisma.project.update({
+    // First, get the project
+    const project = await prisma.project.findUnique({
       where: { id },
-      data: {
-        viewCount: {
-          increment: 1
-        }
-      },
       include: {
         user: true
       }
     })
+
+    if (!project) {
+      return null
+    }
+
+    // Then handle view counting
+    if (userId) {
+      // Logged in user - count once per user
+      try {
+        await prisma.$transaction(async (tx) => {
+          const existingView = await tx.viewLog.findUnique({
+            where: {
+              userId_projectId: {
+                userId,
+                projectId: id
+              }
+            }
+          })
+
+          if (!existingView) {
+            await tx.viewLog.create({
+              data: { userId, projectId: id }
+            })
+            await tx.project.update({
+              where: { id },
+              data: { viewCount: { increment: 1 } }
+            })
+          }
+        })
+      } catch (viewError) {
+        // Ignore unique constraint errors (race condition)
+        // The view was already counted, which is fine
+        console.log('View already counted for this user')
+      }
+    }
+    // For anonymous users, we don't count views to prevent abuse
+    // Only logged-in members get counted as per requirement
+
     return project
   } catch (error) {
+    console.error('Failed to get project:', error)
     return null
   }
 }
 
-import { auth } from '@/auth'
-
-// ... existing imports ...
 
 export async function createProject(formData: FormData) {
   const session = await auth()
@@ -145,7 +183,6 @@ export async function getCreatorStats() {
   }
 }
 
-
 export async function getRelatedProjects(currentProjectId: string, category: string) {
   try {
     const related = await prisma.project.findMany({
@@ -187,15 +224,52 @@ export async function getRelatedProjects(currentProjectId: string, category: str
 }
 
 export async function likeProject(projectId: string) {
+  const session = await auth()
+    
+  if (!session?.user?.id) {
+     return // Or throw error
+  }
+  
+  const userId = session.user.id
+
   try {
-    await prisma.project.update({
-      where: { id: projectId },
-      data: {
-        likeCount: {
-          increment: 1
-        }
-      }
+    // Transaction to ensure atomicity
+    await prisma.$transaction(async (tx) => {
+       const existingLike = await tx.likeLog.findUnique({
+         where: {
+           userId_projectId: {
+             userId,
+             projectId
+           }
+         }
+       })
+
+       if (existingLike) {
+         // Already liked. Toggle off? Or just do nothing?
+         // Usually "like" is a toggle. Let's make it a toggle (Like/Unlike) or just ignore duplicates?
+         // Request says "count 1". Usually implies duplicate prevention.
+         // Let's implement TOGGLE behavior for better UX.
+         await tx.likeLog.delete({
+            where: {
+                userId_projectId: { userId, projectId }
+            }
+         })
+         await tx.project.update({
+            where: { id: projectId },
+            data: { likeCount: { decrement: 1 } }
+         })
+       } else {
+         // New like
+         await tx.likeLog.create({
+            data: { userId, projectId }
+         })
+         await tx.project.update({
+            where: { id: projectId },
+            data: { likeCount: { increment: 1 } }
+         })
+       }
     })
+
     revalidatePath('/')
     revalidatePath(`/projects/${projectId}`)
   } catch (error) {

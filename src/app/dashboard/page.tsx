@@ -1,6 +1,6 @@
 import { getCreatorStats } from '@/app/actions/project'
 import Link from 'next/link'
-import { LayoutDashboard, Eye, BarChart2, TrendingUp, ExternalLink, Home, PlusCircle } from 'lucide-react'
+import { LayoutDashboard, Eye, BarChart2, TrendingUp, ExternalLink, Home, PlusCircle, Heart } from 'lucide-react'
 
 export default async function DashboardPage() {
   const projects = await getCreatorStats()
@@ -26,6 +26,7 @@ export default async function DashboardPage() {
   // Generic Stats
   const totalViews = projects.reduce((acc, p) => acc + p.viewCount, 0)
   const totalImpressions = projects.reduce((acc, p) => acc + p.impressionCount, 0)
+  const totalLikes = projects.reduce((acc, p) => acc + p.likeCount, 0)
   const avgCtr = totalImpressions > 0 ? (totalViews / totalImpressions) * 100 : 0
   
   // Fairness Score Calculation (Mock Logic for MVP)
@@ -62,7 +63,7 @@ export default async function DashboardPage() {
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-blue-100 transition-all">
               <div className="flex justify-between items-start mb-4">
                  <div className="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:scale-110 transition-transform">
@@ -82,6 +83,16 @@ export default async function DashboardPage() {
               </div>
               <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Fair Impressions</h3>
               <p className="text-3xl font-black text-gray-900">{totalImpressions.toLocaleString()}</p>
+           </div>
+
+           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-red-100 transition-all">
+              <div className="flex justify-between items-start mb-4">
+                 <div className="p-3 bg-red-50 rounded-xl text-red-500 group-hover:scale-110 transition-transform">
+                    <Heart size={24} className="fill-red-500" />
+                 </div>
+              </div>
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Total Likes</h3>
+              <p className="text-3xl font-black text-gray-900">{totalLikes.toLocaleString()}</p>
            </div>
 
            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden group hover:border-blue-100 transition-all">
@@ -122,6 +133,7 @@ export default async function DashboardPage() {
                    <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Project Details</th>
                    <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Views</th>
                    <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Impressions</th>
+                   <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Likes</th>
                    <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">CTR</th>
                    <th className="px-8 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Status</th>
                  </tr>
@@ -138,7 +150,7 @@ export default async function DashboardPage() {
                          <div className="flex items-center gap-5">
                             <div className="w-16 h-12 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100 shadow-sm relative group-hover:shadow-md transition-all">
                                {project.thumbnailUrl ? (
-                                 <img src={project.thumbnailUrl} className="w-full h-full object-cover" />
+                                 <img src={project.thumbnailUrl} className="w-full h-full object-cover" alt={project.title} />
                                ) : (
                                  <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No Img</div>
                                )}
@@ -147,15 +159,23 @@ export default async function DashboardPage() {
                                <p className="font-bold text-gray-900 text-base">{project.title}</p>
                                <div className="flex items-center gap-2 mt-1">
                                   <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-500 font-bold rounded">{project.category}</span>
-                                  <Link href={`/projects/${project.id}`} className="text-xs font-medium text-blue-600 hover:underline flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    View <ExternalLink size={10} />
-                                  </Link>
+                                  {project.projectUrl && (
+                                     <Link href={project.projectUrl} target="_blank" className="text-blue-600 hover:text-blue-700 transition-colors">
+                                        <ExternalLink size={14} />
+                                     </Link>
+                                  )}
                                </div>
                             </div>
                          </div>
                        </td>
                        <td className="px-8 py-6 text-right font-bold text-gray-700">{project.viewCount.toLocaleString()}</td>
                        <td className="px-8 py-6 text-right font-bold text-gray-900">{project.impressionCount.toLocaleString()}</td>
+                       <td className="px-8 py-6 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                             <Heart size={14} className="fill-red-500 text-red-500" />
+                             <span className="font-bold text-red-600">{project.likeCount.toLocaleString()}</span>
+                          </div>
+                       </td>
                        <td className="px-8 py-6 text-right">
                           <div className="flex items-center justify-end gap-2">
                              <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
