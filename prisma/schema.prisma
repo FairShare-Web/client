@@ -25,6 +25,7 @@ model Project {
   projectUrl      String?
   category        String          @default("General")
   viewCount       Int             @default(0)
+  likeCount       Int             @default(0)
   impressionCount Int             @default(0)
   userId          String
   user            User            @relation(fields: [userId], references: [id])

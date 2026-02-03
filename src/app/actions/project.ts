@@ -143,3 +143,60 @@ export async function getCreatorStats() {
   }
 }
 
+
+export async function getRelatedProjects(currentProjectId: string, category: string) {
+  try {
+    const related = await prisma.project.findMany({
+      where: {
+        AND: [
+          { category: category }, // Try to match category
+          { id: { not: currentProjectId } } // Exclude current
+        ]
+      },
+      orderBy: {
+        impressionCount: 'asc' // Prioritize fairness
+      },
+      take: 3,
+      include: {
+        user: true
+      }
+    })
+
+    // If not enough related projects, fill with any fair projects
+    if (related.length < 3) {
+       const others = await prisma.project.findMany({
+          where: {
+             AND: [
+                { id: { notIn: [currentProjectId, ...related.map(p => p.id)] } }
+             ]
+          },
+          orderBy: { impressionCount: 'asc' },
+          take: 3 - related.length,
+          include: { user: true }
+       })
+       return [...related, ...others]
+    }
+
+    return related
+  } catch (error) {
+    console.error('Failed to fetch related projects', error)
+    return []
+  }
+}
+
+export async function likeProject(projectId: string) {
+  try {
+    await prisma.project.update({
+      where: { id: projectId },
+      data: {
+        likeCount: {
+          increment: 1
+        }
+      }
+    })
+    revalidatePath('/')
+    revalidatePath(`/projects/${projectId}`)
+  } catch (error) {
+    console.error('Failed to like project:', error)
+  }
+}

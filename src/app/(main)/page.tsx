@@ -71,14 +71,14 @@ export default async function MainPage(props: MainPageProps) {
              </p>
 
              {/* Category Filter Chips */}
-             <div className="flex flex-wrap items-center justify-center gap-2">
+             <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                 {Object.entries(categoryMap).map(([key, label]) => (
                   <Link 
                     key={key} 
                     href={key === 'All' ? '/' : `/?category=${key}`}
-                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${
+                    className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all border whitespace-nowrap flex-shrink-0 ${
                       category === key 
-                        ? 'bg-gray-900 text-white border-gray-900' 
+                        ? 'bg-gray-900 text-white border-gray-900 shadow-md transform scale-105' 
                         : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}
                   >
