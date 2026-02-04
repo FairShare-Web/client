@@ -44,7 +44,3 @@ FairShare는 "모든 프로젝트는 주목받을 자격이 있다"는 신념 �
 - **Icons**: [Lucide React](https://lucide.dev/)
 
 ---
-
-## 📄 라이선스
-
-This project is open source and available under the [MIT License](LICENSE).
